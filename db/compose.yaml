@@ -1,0 +1,23 @@
+services:
+
+  db:
+    image: mysql:8.0
+    restart: unless-stopped
+    # MYSQL_ROOT_PASSWORD is only applied when the data volume is empty (first run).
+    # If login fails after changing .env, reset the root password or recreate the volume.
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    
+    # specifies to container where to store volumes
+    volumes:
+      - mysql_data:/var/lib/mysql
+      # Runs *.sql only when data dir is empty (first init). Existing volume: apply db/schema.sql manually (README).
+      - ./schema.sql:/docker-entrypoint-initdb.d/01-plane.sql:ro
+
+    # allows for other containers to access database via port
+    ports:
+      - "3306:3306"
+
+# allows for data persistence
+volumes:
+  mysql_data:
