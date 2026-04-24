@@ -5,6 +5,7 @@
 The LLM-SQL interactions will be handled using SQL MCP Server to interact with the Azure SQL database.
 Ollama will be used to run localized LLMs to avoid costs of using agentic AI like Claude Code, Codex, etc.
 Docker will be used for ease of build and tear down, containerizing the SQL MCP Server, Ollama, etc.
+This analysis agent is implemented in [db](../db/) folder of this project.
 
 The following image descibes the architecture of how the analysis agent is implemented.
 
