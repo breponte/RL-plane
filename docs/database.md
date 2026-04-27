@@ -16,7 +16,7 @@ As mentioned in the the [instructions](https://learn.microsoft.com/en-us/azure/a
 open a new file and set its language to SQL in order to be able to establish a connection. Open the
 command palette and search for `MS SQL:Connect` and __Create Connection Profile__. The following hud should display:
 
-![Create Connetion Profile](./images/db-setup.png)
+![Create Connetion Profile](./media/db-setup.png)
 
 Fill it out as follows:
 
