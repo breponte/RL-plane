@@ -9,7 +9,7 @@ This analysis agent is implemented in [db](../db/) folder of this project.
 
 The following image descibes the architecture of how the analysis agent is implemented.
 
-![Pipeline](./images/sql-llm-pipeline.png)
+![Pipeline](./media/sql-llm-pipeline.png)
 
 The pipeline is as follows:
 1. The user sends a question to the mcphost.
