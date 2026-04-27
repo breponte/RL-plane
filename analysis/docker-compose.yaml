@@ -1,0 +1,122 @@
+services:
+  # SQL Server
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    platform: linux/amd64
+    # automate setup
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=${MSSQL_PASSWORD:-StrongPassword123!}
+    ports:
+      - "${HOST_SQL_PORT:-1434}:1433"
+    # continuously verifies healthy status of service
+    healthcheck:
+      test: /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "${MSSQL_PASSWORD:-StrongPassword123!}" -C -Q "SELECT 1" || exit 1
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 30s
+
+  # MCP Server
+  mcp_server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # waits until mssql is healthy before starting
+    depends_on:
+      mssql:
+        condition: service_healthy
+    environment:
+      - MSSQL_SERVER=${MSSQL_SERVER:-mssql}
+      - MSSQL_PORT=${MSSQL_PORT:-1433}
+      - MSSQL_USER=${MSSQL_USER:-sa}
+      - MSSQL_PASSWORD=${MSSQL_PASSWORD:-StrongPassword123!}
+      - MSSQL_DATABASE=${MSSQL_DATABASE:-master}
+    networks:
+      - app-net
+    # MCP expects to interface with stdin, requires permission
+    stdin_open: true
+    tty: true
+
+  # AI stack — CPU variant
+  ollama-cpu:
+    image: ollama/ollama:latest
+    # ensures mutual exclusion with NVIDIA setup
+    profiles: ["cpu"]
+    container_name: ollama
+    hostname: ollama
+    # Ollama API port
+    ports:
+      - "11434:11434"
+    networks:
+      - app-net
+    # persistence of downloaded models
+    volumes:
+      - ./ollama-local:/root/.ollama
+
+  openWebUI-cpu:
+    image: ghcr.io/open-webui/open-webui:main
+    # ensures mutual exclusion with NVIDIA setup
+    profiles: ["cpu"]
+    container_name: openwebui
+    hostname: openwebui
+    # localhost port
+    ports:
+      - "3000:8080"
+    networks:
+      - app-net
+    restart: unless-stopped
+    volumes:
+      - ./open-webui-local:/app/backend/data
+    environment:
+      OLLAMA_BASE_URL: http://ollama:11434
+    depends_on:
+      - ollama-cpu
+
+  # AI stack — NVIDIA GPU variant
+  ollama-nvidia:
+    image: ollama/ollama:latest
+    # ensures mutual exclusion with cpu setup
+    profiles: ["nvidia"]
+    container_name: ollama
+    hostname: ollama
+    # Ollama API port
+    ports:
+      - "11434:11434"
+    # NVIDIA stack setup
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: ["gpu"]
+              count: all
+    networks:
+      - app-net
+    # persistence of downloaded models
+    volumes:
+      - ./ollama-local:/root/.ollama
+
+  openWebUI-nvidia:
+    image: ghcr.io/open-webui/open-webui:main
+     # ensures mutual exclusion with cpu setup
+    profiles: ["nvidia"]
+    container_name: openwebui
+    hostname: openwebui
+    # localhost port
+    ports:
+      - "3000:8080"
+    networks:
+      - app-net
+    restart: unless-stopped
+    volumes:
+      - ./open-webui-local:/app/backend/data
+    environment:
+      OLLAMA_BASE_URL: http://ollama:11434
+    depends_on:
+      - ollama-nvidia
+
+# Allows all services to be reachable by one another
+networks:
+  app-net:
+    driver: bridge

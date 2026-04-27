@@ -1,0 +1,10 @@
+# mssql_mcp_server Python binaries
+__pycache__/
+*.py[cod]
+*$py.class
+
+# ollama
+ollama-local
+
+# open_webui
+open-webui-local
