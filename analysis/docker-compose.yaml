@@ -37,6 +37,9 @@ services:
     # MCP expects to interface with stdin, requires permission
     stdin_open: true
     tty: true
+    # publish MCPO port for visibility
+    ports:
+      - "8000:8000"
 
   # AI stack — CPU variant
   ollama-cpu:

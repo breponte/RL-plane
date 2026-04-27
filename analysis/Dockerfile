@@ -17,5 +17,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy project files
 COPY . .
 
+# Open port 8000 for OpenWebUI to send HTTP to stdin
+EXPOSE 8000
+
+# Run the MCP-to-OpenAPI proxy server to connect OpenWebUI HTTP requests to MCP server's stdin
 # Run the MCP server
-CMD ["python", "-m", "mssql_mcp_server"]
+CMD ["mcpo", "--host", "0.0.0.0", "--port", "8000", "--api-key", "top-secret", "--", \
+    "python", "-m", "mssql_mcp_server"]

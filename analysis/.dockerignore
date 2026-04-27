@@ -1,0 +1,9 @@
+open-webui-local
+ollama-local
+.git
+__pycache__
+*.pyc
+.venv
+venv
+.env
+.DS_Store
