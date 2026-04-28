@@ -7,6 +7,8 @@ services:
     environment:
       - ACCEPT_EULA=Y
       - MSSQL_SA_PASSWORD=${MSSQL_PASSWORD:-StrongPassword123!}
+    networks:
+      - app-net
     ports:
       - "${HOST_SQL_PORT:-1434}:1433"
     # continuously verifies healthy status of service
@@ -34,12 +36,12 @@ services:
       - MSSQL_DATABASE=${MSSQL_DATABASE:-master}
     networks:
       - app-net
-    # MCP expects to interface with stdin, requires permission
-    stdin_open: true
-    tty: true
     # publish MCPO port for visibility
     ports:
       - "8000:8000"
+    # MCP expects to interface with stdin, requires permission
+    stdin_open: true
+    tty: true
 
   # AI stack — CPU variant
   ollama-cpu:
