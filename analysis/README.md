@@ -28,9 +28,19 @@ docker compose --profile nvidia up
 Once the container is fully running, open up OpenWebUI through http://localhost:3000 in order to access the Ollama models.
 
 Once logged in, there won't initially be any models loaded, so you must load them manually. Navigate to `Profile > Admin Panel > Settings > Models > Manage` and visit Ollama's page to see
-downloadable models. The video shows where to how to navigate.
+downloadable models. The video shows where to how to navigate. __Make sure to download a model that can use MCP tools__. You can also download a Ollama cloud model for better compute and AI intelligence.
 
 <video src="../docs/media/ollama-model.mp4" width="640" controls></video>
+
+### Running the Models
+
+With a model selected, you must now enable the MCP tool for the LLM to use.
+
+![MCP tool integration](../docs/media/tool-integration.png)
+
+In the case that the Docker environment setup failed for OpenWebUI, manually add the tool through `Profile > Admin Panel > Settings > Integrations > Manage Tool Servers` with the URL being the access point for the MCP server [http://mcp_server:8000](http://mcp_server:8000) and the password used for the MCP server (`top-secret`).
+
+With weaker models, it is common for them to hallucinate in several ways, such as ignorance to their access to the MCP tool, fake output, etc. Be very explicit with what you want as much as possible.
 
 ### Teardown
 
