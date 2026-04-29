@@ -63,18 +63,11 @@ def get_db_config():
     # Encryption settings for Azure SQL (Issue #11)
     # Check if we're connecting to Azure SQL
     if config["server"] and ".database.windows.net" in config["server"]:
-        config["tds_version"] = "7.4"  # Required for Azure SQL
-        # Azure SQL requires encryption - use connection string format for pymssql 2.3+
-        # This improves upon TDS-only approach by being more explicit
-        if os.getenv("MSSQL_ENCRYPT", "true").lower() == "true":
-            config["server"] += ";Encrypt=yes;TrustServerCertificate=no"
+        config["tds_version"] = "7.4"  # Required for Azure SQL; FreeTDS negotiates TLS automatically
     else:
         # For non-Azure connections, respect the MSSQL_ENCRYPT setting
-        # Use connection string format in addition to TDS version for better compatibility
-        encrypt_str = os.getenv("MSSQL_ENCRYPT", "false")
-        if encrypt_str.lower() == "true":
-            config["tds_version"] = "7.4"  # Keep existing TDS approach
-            config["server"] += ";Encrypt=yes;TrustServerCertificate=yes"  # Add explicit setting
+        if os.getenv("MSSQL_ENCRYPT", "false").lower() == "true":
+            config["tds_version"] = "7.4"
             
     # Windows Authentication support (Issue #7)
     use_windows_auth = os.getenv("MSSQL_WINDOWS_AUTH", "false").lower() == "true"

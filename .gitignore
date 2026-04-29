@@ -8,3 +8,5 @@ ollama-local
 
 # open_webui
 open-webui-local
+
+.env
