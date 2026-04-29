@@ -1,4 +1,19 @@
 services:
+  # Unpause database
+  db_warmup:
+    image: python:3.11-slim
+    networks:
+      - app-net
+    environment:
+      - MSSQL_SERVER=${MSSQL_SERVER}
+      - MSSQL_USER=${MSSQL_USER}
+      - MSSQL_PASSWORD=${MSSQL_PASSWORD}
+      - MSSQL_DATABASE=${MSSQL_DATABASE}
+    volumes:
+      - ./db_warmup.py:/db_warmup.py:ro
+    command: sh -c "pip install --no-cache-dir pymssql && python /db_warmup.py"
+    restart: "no"
+
   # SQL Server
   mssql:
     image: mcr.microsoft.com/mssql/server:2019-latest
@@ -42,6 +57,10 @@ services:
     # MCP expects to interface with stdin, requires permission
     stdin_open: true
     tty: true
+    # ensures database is reachable and not paused
+    depends_on:
+      db_warmup:
+        condition: service_completed_successfully
 
   # AI stack — CPU variant
   ollama-cpu:
@@ -75,6 +94,10 @@ services:
       - ./open-webui-local:/app/backend/data
     environment:
       OLLAMA_BASE_URL: http://ollama:11434
+      ENABLE_PERSISTENT_CONFIG: "false"
+      TOOL_SERVER_CONNECTIONS: >
+        [{"url":"http://mcp_server:8000","path":"openapi.json","auth_type":"bearer","key":"top-secret","config":{"enable":true,"access_control":null},"info":{"name":"mssql_mcp_server","description":"MSSQL via mcpo proxy"}}]
+      MODEL_DEFAULT_PARAMS: '{"system":"You are a database analyst with read access to an Azure SQL database called plane-db containing two tables: learning_data and hyperparameters. Use the execute_sql tool for all data retrieval — never fabricate table names, columns, or data. Report raw query results faithfully. If a query fails, read the error and try again. If you haven''t queried it, you don''t know it."}'
     depends_on:
       - ollama-cpu
 
@@ -118,6 +141,9 @@ services:
       - ./open-webui-local:/app/backend/data
     environment:
       OLLAMA_BASE_URL: http://ollama:11434
+      ENABLE_PERSISTENT_CONFIG: "false"
+      TOOL_SERVER_CONNECTIONS: >
+        [{"url":"http://mcp_server:8000","path":"openapi.json","auth_type":"bearer","key":"top-secret","config":{"enable":true,"access_control":null},"info":{"name":"mssql_mcp_server","description":"MSSQL via mcpo proxy"}}]
     depends_on:
       - ollama-nvidia
 
