@@ -1,0 +1,4 @@
+mlagents>=1.1.0
+torch
+torchvision
+torchaudio
