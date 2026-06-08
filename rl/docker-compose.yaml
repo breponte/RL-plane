@@ -5,3 +5,12 @@ services:
       dockerfile: Dockerfile
     ports:
       - 5004:5004
+    volumes:
+      - type: bind
+        source: ./config
+        target: /app/config
+        read_only: true
+      - type: bind
+        source: ./demos
+        target: /app/demos
+        read_only: true

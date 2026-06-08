@@ -20,4 +20,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Run mlagents-learn to verify installation
-CMD ["mlagents-learn", "--force"]
+CMD ["mlagents-learn", "config/moveToGoal.yaml", "--run-id=PlaneAgent_Imitation", "--force"]
