@@ -26,6 +26,8 @@ TODO
 
 ### Plane Simulator
 
+The link to the GitHub repository for the Unity environment is [here](https://github.com/breponte/Plane-Simulator)
+
 We used several videos to help with implementation and inspiration for the plane simulator:
 - [Simple Physics Based Plane Controller in Unity](https://www.youtube.com/watch?v=fThb5M2OBJ8)
 - [Creating a Flight Simulator in Unity3D Part 1: Flight](https://github.com/vazgriz/FlightSim)
