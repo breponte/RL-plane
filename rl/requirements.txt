@@ -1,4 +1,5 @@
 mlagents>=1.1.0
-torch
+torch~=2.2.1
 torchvision
 torchaudio
+onnx

@@ -9,4 +9,8 @@ ollama-local
 # open_webui
 open-webui-local
 
+# rl results runs
+results/
+!results/.gitkeep
+
 .env
