@@ -3,5 +3,19 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    working_dir: /app
+    command: mlagents-learn config/config.yaml --run-id=${RUN_ID:-FlightAgent}
     ports:
       - 5004:5004
+    volumes:
+      - type: bind
+        source: ./config
+        target: /app/config
+        read_only: true
+      - type: bind
+        source: ./demos
+        target: /app/demos
+        read_only: true
+      - type: bind
+        source: ./results
+        target: /app/results

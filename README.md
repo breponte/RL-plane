@@ -8,7 +8,7 @@ The plane simulator is developed using Unity 3D. _The plane simulator implementa
 
 ### Reinforcement Learning Agent
 
-TODO
+The reinforcement learning agent utilizes Unity's ML-Agents library to allow for Unity interfacing with PyTorch. The agent resides within a Docker container and communicates via port to Unity. The implementation for the agent environment is found within the [rl folder](./rl/).
 
 ### Database
 
@@ -25,6 +25,8 @@ TODO
 ## References
 
 ### Plane Simulator
+
+The link to the GitHub repository for the Unity environment is [here](https://github.com/breponte/Plane-Simulator)
 
 We used several videos to help with implementation and inspiration for the plane simulator:
 - [Simple Physics Based Plane Controller in Unity](https://www.youtube.com/watch?v=fThb5M2OBJ8)
